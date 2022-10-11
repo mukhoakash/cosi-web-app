@@ -1,11 +1,14 @@
 
 import './App.css';
 import React, {useState} from 'react';
+import axios from 'axios';
 
 function App() {
 
   const [blobName, setBlobName] = useState('')
   const [file, setFile] = useState()
+  const [data, setData] = useState('initial value')
+  const url = "objectstorageprovisioner:8080"
   function handleBlobName(event) {
     console.log("AKASH :: ", event.target.value)
     setBlobName(event.target.value)
@@ -14,6 +17,10 @@ function App() {
   function handleGetBlob(event) {
     if (blobName !== '') {
       // Send GET request with blob name here
+      axios.get(url + "/" + blobName).then(response => {
+        console.log("Response: " + response)
+        setData(response.data)
+      });
     }
   }
 
@@ -26,6 +33,9 @@ function App() {
   function handleUploadBlob(event) {
     if (file !== null) {
       // Send POST request with file here
+      axios.post(url + "/" + blobName, event.target.files[0]).then(response => {
+        console.log(response)
+      });
     }
   }
   function getBlobClient() {}
@@ -42,6 +52,7 @@ function App() {
         <input type="file" onChange={handleFileChoose} />
         <input type="button" value="Upload" onClick={handleUploadBlob} />
         </label>
+        <p>{data}</p>
       </header>
     </div>
   );
